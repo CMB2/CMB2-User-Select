@@ -1,0 +1,25 @@
+{
+    "name": "webdevstudios/cmb2-user-select.",
+    "description": "Special CMB2 Field that allows users to define an autocomplete text field for users",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "WebDevStudios",
+            "email": "contact@webdevstudios.com",
+            "homepage": "https://github.com/WebDevStudios",
+            "role": "Developer"
+        }
+    ],
+    "keywords": ["wordpress", "cmb2", "meta"],
+    "homepage": "https://github.com/WebDevStudios/CMB2-User-Select",
+    "support": {
+        "issues": "https://github.com/WebDevStudios/CMB2-User-Select/issues",
+        "source": "https://github.com/WebDevStudios/CMB2-User-Select"
+    },
+    "require": {
+        "php": ">=5.2",
+    },
+    "autoload": {
+        "files": ["cmb2-user-select.php"]
+    }
+}
