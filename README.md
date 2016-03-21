@@ -3,11 +3,14 @@
 Special CMB2 Field that allows users to define an autocomplete text field for users
 
 ### Example
-<pre>
+```php
 $cmb2->add_field( array(
-  'name'  => __( 'Author', 'wds-new-wiki-post-form' ),
-  'id'    => 'author',
-  'desc'  => __( 'Type the name of the strategist and select from the dropdown', 'cmb2' ),
-  'type'  => 'user_select_text'
+	'name'  => 'Author',,
+	'id'    => 'author',
+	'desc'  => 'Type the name of the author and select from the options',
+	'type'  => 'user_select_text'
+	'options' => array(
+		'minimum_user_level' => 0, // Enable search for all user levels.. use with caution.
+	),
 ) );
-</pre>
+```
