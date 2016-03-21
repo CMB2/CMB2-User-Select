@@ -88,7 +88,6 @@ class WDS_CMB2_User_Select {
 		<script type="text/javascript">
 		jQuery(document).ready( function($) {
 			var l10n = window.cmb2_user_select_field;
-			console.log('l10n', l10n);
 
 			if ( ! l10n.field_ids ) {
 				return console.warn( 'Missing cmb2_user_select_field data!' );
