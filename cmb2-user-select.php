@@ -1,248 +1,148 @@
 <?php
-/*
-  Plugin Name: WDS CMB2 User Select
-  Plugin URI: http://webdevstudios.com
-  Description: Custom field for CMB2 which adds a user-search input
-  Author: WebDevstudios
-  Author URI: http://webdevstudios.com
-  Version: 0.2.0
-  License: GPLv2
+/**
+ * Plugin Name: WDS CMB2 User Select
+ * Plugin URI: http://webdevstudios.com
+ * Description: Custom field for CMB2 which adds a user-search input
+ * Author: WebDevstudios
+ * Author URI: http://webdevstudios.com
+ * Version: 0.2.0
+ * License: GPLv2
  */
 
-class WDS_CMB2_User_Select {
+/**
+ * WDS_CMB2_User_Select loader
+ *
+ * Handles checking for and smartly loading the newest version of this library.
+ *
+ * @category  WordPressLibrary
+ * @package   WDS_CMB2_User_Select
+ * @author    WebDevStudios <contact@webdevstudios.com>
+ * @copyright 2016 WebDevStudios <contact@webdevstudios.com>
+ * @license   GPL-2.0+
+ * @version   0.2.1
+ * @link      https://github.com/WebDevStudios/CMB2-User-Select
+ * @since     0.2.1
+ */
 
-	protected static $single_instance = null;
-	protected static $script_added    = false;
-	protected static $script_data     = array();
+/**
+ * Copyright (c) 2016 WebDevStudios (email : contact@webdevstudios.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2 or, at
+ * your discretion, any later version, as published by the Free
+ * Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
-	/**
-	 * Creates or returns an instance of this class.
-	 * @since  0.1.0
-	 * @return WDS_CMB2_User_Select A single instance of this class.
-	 */
-	public static function get_instance() {
-		if ( null === self::$single_instance ) {
-			self::$single_instance = new self();
-		}
+/**
+ * Loader versioning: https://github.com/jtsternberg/wp-lib-loader
+ */
 
-		return self::$single_instance;
-	}
-
-	/**
-	 * Constructor (setup our hooks)
-	 */
-	protected function __construct() {
-		add_action( 'cmb2_render_user_select_text', array( $this, 'render_user_select_field' ), 10, 5 );
-		add_action( 'wp_ajax_get_users_for_user_select_field', array( $this, 'get_users_for_ajax_search' ) );
-		add_action( 'wp_ajax_nopriv_get_users_for_user_select_field', array( $this, 'get_users_for_ajax_search' ) );
-		add_filter( 'cmb2_sanitize_user_select_text', array( $this, 'santize_value' ), 10, 5 );
-	}
-
-	/**
-	 * Render the field and setup the field for the JS autocomplete.
-	 */
-	public function render_user_select_field( $field, $escaped_value, $object_id, $object_type, $field_type ) {
-
-		$value = wp_parse_args( $escaped_value, array(
-			'name' => '',
-			'id'   => ''
-		) );
-
-		echo $field_type->input( array(
-			'id'           => $field_type->_id( '_name' ),
-			'name'         => $field_type->_name( '[name]' ),
-			'value'        => $value['name'],
-			'autocomplete' => 'off',
-		) );
-
-		echo $field_type->input( array(
-			'id'    => $field_type->_id( '_id' ),
-			'name'  => $field_type->_name( '[id]' ),
-			'value' => $value['id'],
-			'type'  => 'hidden',
-			'desc'  => ''
-		) );
-
-		self::$script_data[] = array(
-			'id'    => $field->args( 'id' ),
-			'level' => $this->get_minimum_user_level( $field ),
-		);
-
-		if ( ! self::$script_added ) {
-			wp_enqueue_script( 'jquery-ui-autocomplete' );
-			add_action( is_admin() ? 'admin_footer' : 'wp_footer', array( __CLASS__, 'footer_js' ) );
-			self::$script_added = true;
-		}
-	}
+if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
 
 	/**
-	 * Adds JS to footer which enables the autocomplete
-	 */
-	public static function footer_js() {
-		wp_localize_script( 'jquery-ui-autocomplete', 'cmb2_user_select_field', array(
-			'field_ids' => self::$script_data,
-			'ajax_url'  => admin_url( 'admin-ajax.php' ),
-		) );
-
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready( function($) {
-			var l10n = window.cmb2_user_select_field;
-
-			if ( ! l10n.field_ids ) {
-				return console.warn( 'Missing cmb2_user_select_field data!' );
-			}
-
-			var renderItem = function( ul, item ) {
-				return $( '<li>' )
-					.append( '<a style="cursor: pointer;">' + item.display_name + '</a>' )
-					.appendTo( ul );
-			};
-
-			var setupAutocomplete = function( field_id, level ) {
-				var $field = $( document.getElementById( field_id + '_name' ) );
-				if ( ! $field.length ) {
-					return console.warn( 'Missing field input for ' + field_id );
-				}
-
-				$field.autocomplete({
-					source : function( request, responseCallback ) {
-						$.ajax({
-							url      : l10n.ajax_url,
-							dataType : 'json',
-							data     : {
-								action : 'get_users_for_user_select_field',
-								level  : level,
-								q      : request.term
-							},
-							success : function( response ) {
-								if ( ! response.success ) {
-									return console.warn( response );
-								}
-								responseCallback( response.data );
-							}
-						});
-						return false;
-					},
-					minLength : 2,
-					select : function( event, ui ) {
-						$field.val( ui.item.display_name );
-						$( document.getElementById( field_id + '_id' ) ).val( ui.item.ID );
-
-						return false;
-					}
-				} ).autocomplete( "instance" )._renderItem = renderItem;
-			};
-
-			for ( var i = l10n.field_ids.length - 1; i >= 0; i-- ) {
-				setupAutocomplete( l10n.field_ids[i].id, l10n.field_ids[i].level );
-			}
-
-		});
-		</script>
-		<?php
-	}
-
-	/**
-	 * Get field min. user level (defaults to 2).
+	 * Versioned loader class-name
 	 *
-	 * @param  CMB2_Field $field
+	 * This ensures each version is loaded/checked.
 	 *
-	 * @return int Numeric min. user level.
+	 * @category WordPressLibrary
+	 * @package  WDS_CMB2_User_Select
+	 * @author   WebDevStudios <contact@webdevstudios.com>
+	 * @license  GPL-2.0+
+	 * @version  0.2.1
+	 * @link     https://github.com/WebDevStudios/CMB2-User-Select
+	 * @since    0.2.1
 	 */
-	public function get_minimum_user_level( CMB2_Field $field ) {
-		$level = $field->options( 'minimum_user_level' );
-		return is_numeric( $level ) ? absint( $level ) : 2;
-	}
+	class WDS_CMB2_User_Select_021 {
 
-	/**
-	 * Santize/validate the user search field value
-	 */
-	function santize_value( $override_value, $value, $object_id, $args, $sanitizer ) {
-		// Clean up
-		$value = array_map( 'sanitize_text_field', $value );
+		/**
+		 * WDS_CMB2_User_Select version number
+		 * @var   string
+		 * @since 0.2.1
+		 */
+		const VERSION = '0.2.1';
 
-		// No name, clear the value.
-		if ( empty( $value['name'] ) ) {
-			$value = '';
-		}
+		/**
+		 * Current version hook priority.
+		 * Will decrement with each release
+		 *
+		 * @var   int
+		 * @since 0.2.1
+		 */
+		const PRIORITY = 9999;
 
-		// If we have a name, do some additional validation
-		if ( ! empty( $value['name'] ) ) {
-
-			// Get field min. user level
-			$level = $this->get_minimum_user_level( $sanitizer->field );
-
-			// Check if name matches a user search
-			$users = $this->users_search_by_level( $value['name'], $level );
-
-			// If not, clear the value.
-			if ( empty( $users ) ) {
-				$value = '';
-			} else {
-
-				$unset = true;
-
-				// Loop the found users, and check if the name matches
-				foreach ( $users as $user ) {
-					if ( $user->display_name == $value['name'] ) {
-						$unset = false;
-						break;
-					}
-				}
-
-				// If no matches, clear the value.
-				if ( $unset ) {
-					$value = '';
-				}
+		/**
+		 * Starts the version checking process.
+		 * Creates WDS_CMB2_USER_SELECT_LOADED definition for early detection by
+		 * other scripts.
+		 *
+		 * Hooks WDS_CMB2_User_Select inclusion to the wds_cmb2_user_select_load hook
+		 * on a high priority which decrements (increasing the priority) with
+		 * each version release.
+		 *
+		 * @since 0.2.1
+		 */
+		public function __construct() {
+			if ( ! defined( 'WDS_CMB2_USER_SELECT_LOADED' ) ) {
+				/**
+				 * A constant you can use to check if WDS_CMB2_User_Select is loaded
+				 * for your plugins/themes with WDS_CMB2_User_Select dependency.
+				 *
+				 * Can also be used to determine the priority of the hook
+				 * in use for the currently loaded version.
+				 */
+				define( 'WDS_CMB2_USER_SELECT_LOADED', self::PRIORITY );
 			}
+
+			// Use the hook system to ensure only the newest version is loaded.
+			add_action( 'wds_cmb2_user_select_load', array( $this, 'include_lib' ), self::PRIORITY );
+
+			// Then fire our hook.
+			do_action( 'wds_cmb2_user_select_load' );
 		}
 
-		// Return the sanitized/validated value.
-		return $value;
-	}
+		/**
+		 * A final check if WDS_CMB2_User_Select exists before kicking off
+		 * our WDS_CMB2_User_Select loading.
+		 *
+		 * WDS_CMB2_USER_SELECT_VERSION and WDS_CMB2_USER_SELECT_DIR constants are
+		 * set at this point.
+		 *
+		 * @since  0.2.1
+		 */
+		public function include_lib() {
+			if ( class_exists( 'WDS_CMB2_User_Select', false ) ) {
+				return;
+			}
 
-	/**
-	 * Gets the users based on the search string/user-level provided via ajax
-	 */
-	public function get_users_for_ajax_search() {
-		$search_query = isset( $_REQUEST['q'] ) ? $_REQUEST['q'] : '';
-		$user_level = isset( $_REQUEST['level'] ) && is_numeric( $_REQUEST['level'] )
-			? absint( $_REQUEST['level'] )
-			: '2';
+			if ( ! defined( 'WDS_CMB2_USER_SELECT_VERSION' ) ) {
+				/**
+				 * Defines the currently loaded version of WDS_CMB2_User_Select.
+				 */
+				define( 'WDS_CMB2_USER_SELECT_VERSION', self::VERSION );
+			}
 
-		if ( empty( $search_query ) ) {
-			wp_send_json_error( 'No search query' );
+			if ( ! defined( 'WDS_CMB2_USER_SELECT_DIR' ) ) {
+				/**
+				 * Defines the directory of the currently loaded version of WDS_CMB2_User_Select.
+				 */
+				define( 'WDS_CMB2_USER_SELECT_DIR', dirname( __FILE__ ) . '/' );
+			}
+
+			// Include and initiate WDS_CMB2_User_Select.
+			require_once WDS_CMB2_USER_SELECT_DIR . 'lib/init.php';
 		}
 
-
-		$users = $this->users_search_by_level( $search_query, $user_level );
-		wp_send_json_success( $users );
 	}
 
-	/**
-	 * Gets the users based on the search string, and the user level provided.
-	 */
-	public function users_search_by_level( $search_query, $user_level = '2' ) {
-		if ( empty( $search_query ) ) {
-			return false;
-		}
-
-		$user_args = array(
-			'search' 		=> sanitize_text_field( $search_query . '*' ),
-			'fields' 		=> array( 'display_name', 'ID' ),
-			'meta_query' 	=> array(
-				array(
-					'key' => 'wp_user_level',
-					'value' => (string) $user_level,
-					'compare' => '>=',
-					'type' => 'NUMERIC'
-				)
-			)
-		);
-
-		return get_users( $user_args );
-	}
-
+	// Kick it off.
+	new WDS_CMB2_User_Select_021;
 }
-WDS_CMB2_User_Select::get_instance();
