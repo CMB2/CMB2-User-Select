@@ -105,6 +105,17 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
 			// Use the hook system to ensure only the newest version is loaded.
 			add_action( 'wds_cmb2_user_select_load', array( $this, 'include_lib' ), self::PRIORITY );
 
+			// Use the hook system to ensure only the newest version is loaded.
+			add_action( 'after_setup_theme', array( $this, 'do_hook' ) );
+		}
+
+		/**
+		 * Fires the cmb2_attached_posts_field_load action hook
+		 * (from the after_setup_theme hook).
+		 *
+		 * @since 1.2.3
+		 */
+		public function do_hook() {
 			// Then fire our hook.
 			do_action( 'wds_cmb2_user_select_load' );
 		}
