@@ -43,7 +43,7 @@
  */
 
 /**
- * Loader versioning: https://github.com/jtsternberg/wp-lib-loader
+ * Loader versioning: http://jtsternberg.github.io/wp-lib-loader/
  */
 
 if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
