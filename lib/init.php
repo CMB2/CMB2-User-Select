@@ -245,6 +245,7 @@ class WDS_CMB2_User_Select {
 			)
 		);
 
+		$user_args = apply_filters( 'wds_cmb2_user_select_search_args', $user_args, $this );
 		return get_users( $user_args );
 	}
 

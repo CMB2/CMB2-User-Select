@@ -5,7 +5,7 @@
  * Description: Custom field for CMB2 which adds a user-search input
  * Author: WebDevstudios
  * Author URI: http://webdevstudios.com
- * Version: 0.2.0
+ * Version: 0.2.2
  * License: GPLv2
  */
 
@@ -19,7 +19,7 @@
  * @author    WebDevStudios <contact@webdevstudios.com>
  * @copyright 2016 WebDevStudios <contact@webdevstudios.com>
  * @license   GPL-2.0+
- * @version   0.2.1
+ * @version   0.2.2
  * @link      https://github.com/WebDevStudios/CMB2-User-Select
  * @since     0.2.1
  */
@@ -46,7 +46,7 @@
  * Loader versioning: http://jtsternberg.github.io/wp-lib-loader/
  */
 
-if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
+if ( ! class_exists( 'WDS_CMB2_User_Select_022', false ) ) {
 
 	/**
 	 * Versioned loader class-name
@@ -57,18 +57,18 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
 	 * @package  WDS_CMB2_User_Select
 	 * @author   WebDevStudios <contact@webdevstudios.com>
 	 * @license  GPL-2.0+
-	 * @version  0.2.1
+	 * @version  0.2.2
 	 * @link     https://github.com/WebDevStudios/CMB2-User-Select
 	 * @since    0.2.1
 	 */
-	class WDS_CMB2_User_Select_021 {
+	class WDS_CMB2_User_Select_022 {
 
 		/**
 		 * WDS_CMB2_User_Select version number
 		 * @var   string
 		 * @since 0.2.1
 		 */
-		const VERSION = '0.2.1';
+		const VERSION = '0.2.2';
 
 		/**
 		 * Current version hook priority.
@@ -77,7 +77,7 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
 		 * @var   int
 		 * @since 0.2.1
 		 */
-		const PRIORITY = 9999;
+		const PRIORITY = 9998;
 
 		/**
 		 * Starts the version checking process.
@@ -155,5 +155,5 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_021', false ) ) {
 	}
 
 	// Kick it off.
-	new WDS_CMB2_User_Select_021;
+	new WDS_CMB2_User_Select_022;
 }
