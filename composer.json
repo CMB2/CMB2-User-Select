@@ -10,6 +10,7 @@
             "role": "Developer"
         }
     ],
+    "type": "wordpress-plugin",
     "keywords": ["wordpress", "cmb2", "meta"],
     "homepage": "https://github.com/WebDevStudios/CMB2-User-Select",
     "support": {
