@@ -46,7 +46,7 @@
  * Loader versioning: http://jtsternberg.github.io/wp-lib-loader/
  */
 
-if ( ! class_exists( 'WDS_CMB2_User_Select_022', false ) ) {
+if ( ! class_exists( 'WDS_CMB2_User_Select_023', false ) ) {
 
 	/**
 	 * Versioned loader class-name
@@ -61,14 +61,14 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_022', false ) ) {
 	 * @link     https://github.com/WebDevStudios/CMB2-User-Select
 	 * @since    0.2.1
 	 */
-	class WDS_CMB2_User_Select_022 {
+	class WDS_CMB2_User_Select_023 {
 
 		/**
 		 * WDS_CMB2_User_Select version number
 		 * @var   string
 		 * @since 0.2.1
 		 */
-		const VERSION = '0.2.2';
+		const VERSION = '0.2.3';
 
 		/**
 		 * Current version hook priority.
@@ -77,7 +77,7 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_022', false ) ) {
 		 * @var   int
 		 * @since 0.2.1
 		 */
-		const PRIORITY = 9998;
+		const PRIORITY = 9997;
 
 		/**
 		 * Starts the version checking process.
@@ -155,5 +155,5 @@ if ( ! class_exists( 'WDS_CMB2_User_Select_022', false ) ) {
 	}
 
 	// Kick it off.
-	new WDS_CMB2_User_Select_022;
+	new WDS_CMB2_User_Select_023;
 }
