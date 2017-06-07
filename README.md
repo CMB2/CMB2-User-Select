@@ -10,7 +10,7 @@ $cmb2->add_field( array(
 	'desc'  => 'Type the name of the author and select from the options',
 	'type'  => 'user_select_text'
 	'options' => array(
-		'minimum_user_level' => 0, // Enable search for all user levels.. use with caution.
+		'user_roles' => array( 'role1', 'role2' ), // Specify which roles to query for.
 	),
 ) );
 ```
