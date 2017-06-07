@@ -5,7 +5,7 @@
  * Description: Custom field for CMB2 which adds a user-search input
  * Author: WebDevstudios
  * Author URI: http://webdevstudios.com
- * Version: 0.2.2
+ * Version: 0.2.3
  * License: GPLv2
  */
 
@@ -19,7 +19,7 @@
  * @author    WebDevStudios <contact@webdevstudios.com>
  * @copyright 2016 WebDevStudios <contact@webdevstudios.com>
  * @license   GPL-2.0+
- * @version   0.2.2
+ * @version   0.2.3
  * @link      https://github.com/WebDevStudios/CMB2-User-Select
  * @since     0.2.1
  */
