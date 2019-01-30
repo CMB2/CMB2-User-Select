@@ -19,8 +19,8 @@ The value returned is an array with the users `id` and `name`, eg:
 
 ```php
 array(
-    'id' => 1
-    'name' => 'Joe Blogs'
+	'id'   => 1
+	'name' => 'Joe Blogs'
 )
 ```
 
@@ -36,11 +36,11 @@ the data.
  * @return array('name' => string, 'id' => int)
  */
 function id_to_user_select_text($value) {
-    $user = get_user_by('id', (int)$value);
-    return array(
-        'name' => $user->display_name,
-        'id' => $user->ID,
-    );
+	$user = get_user_by('id', (int)$value);
+	return array(
+		'name' => $user->display_name,
+		'id'   => $user->ID,
+	);
 }
 
 /**
@@ -49,12 +49,12 @@ function id_to_user_select_text($value) {
  * @return int
  */
 function user_select_text_to_id($value) {
-    return $value['id'];
+	return $value['id'];
 }
 
 $cmb2->add_field( array(
-    // ...snip...
-    'escape_cb' => 'user_select_text_to_id',
-    'sanitization_cb' => 'id_to_user_select_text',
+	// ...snip...
+	'escape_cb'       => 'user_select_text_to_id',
+	'sanitization_cb' => 'id_to_user_select_text',
 ) );
 ```
